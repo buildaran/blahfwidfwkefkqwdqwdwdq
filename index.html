@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>bloxharvest | Grow A Garden 2 Marketplace</title>
+    <!-- Custom Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom GrowingGarden Font Definition */
+        @font-face {
+            font-family: 'GrowingGarden';
+            src: url('GrowingGarden-Regular.ttf') format('truetype'),
+                 url('GrowingGarden-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            /* Light Theme */
+            --bg-main: #fbfbfd;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f3f3f6;
+            --bg-topbar: rgba(255, 255, 255, 0.92);
+            --border-color: #e2e2e8;
+            --border-hover: #cbcbd4;
+            
+            /* Red Accent */
+            --accent-red: #e2222c;
+            --accent-hover: #c81b24;
+            --accent-light: rgba(226, 34, 44, 0.08);
+            
+            --text-main: #1a1a1c;
+            --text-muted: #75757c;
+            --text-sub: #45454b;
+            
+            --font-brand: 'GrowingGarden', 'Comic Neue', 'Comic Sans MS', 'Comic Sans', sans-serif;
+            --font-body: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', sans-serif;
+            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-body);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* White Background with Infinite Moving Small Gray logo.PNG Pattern */
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: -80px;
+            background-image: url('logo.PNG');
+            background-size: 40px 40px;
+            background-repeat: repeat;
+            opacity: 0.05; 
+            filter: grayscale(100%);
+            animation: moveLogoBg 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes moveLogoBg {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(80px, 80px); }
+        }
+
+        /* Loading Animation */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--accent-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.25rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            font-family: var(--font-brand);
+            font-size: 1.35rem;
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        /* Promo Banner */
+        .promo-banner { 
+            background: var(--accent-red); 
+            color: white; 
+            text-align: center; 
+            padding: 0.6rem; 
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            font-family: var(--font-brand); 
+            letter-spacing: 0.02em; 
+            position: relative; 
+            z-index: 100; 
+        }
+        
+        .promo-banner span { 
+            background: white; 
+            color: var(--accent-red); 
+            padding: 0.1rem 0.4rem; 
+            border-radius: 4px; 
+            margin: 0 0.2rem; 
+        }
+
+        /* Distinct Topbar Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: linear-gradient(180deg, #ffffff 0%, #fdf4f4 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 5px solid var(--accent-red);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(226, 34, 44, 0.08);
+        }
+
+        .topbar {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            cursor: pointer;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            filter: drop-shadow(0 2px 4px rgba(226, 34, 44, 0.15));
+        }
+
+        .brand-text {
+            font-family: var(--font-brand);
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--accent-red);
+            text-transform: lowercase;
+            line-height: 1;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        /* Collapsible Topbar Search */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-expandable {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            transition: width 0.25s ease, border-color 0.2s, box-shadow 0.2s;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .search-expandable.active {
+            width: 220px;
+            border-color: var(--accent-red);
+            box-shadow: 0 4px 14px rgba(226, 34, 44, 0.15);
+        }
+
+        .search-icon-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 38px;
+            height: 38px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+
+        .search-icon-btn:hover, .search-expandable.active .search-icon-btn {
+            color: var(--accent-red);
+        }
+
+        .search-input-field {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding-left: 38px;
+            padding-right: 28px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .search-expandable.active .search-input-field {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .search-close-btn {
+            position: absolute;
+            right: 6px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+            z-index: 3;
+        }
+
+        .search-expandable.active .search-close-btn {
+            display: flex;
+        }
+
+        /* Topbar Controls */
+        .game-select-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.55rem 0.9rem;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .game-select-btn span {
+            color: var(--text-main);
+            font-family: var(--font-body);
+        }
+
+        .game-select-btn:hover {
+            border-color: var(--accent-red);
+            background: var(--bg-card-hover);
+            box-shadow: 0 4px 12px rgba(226, 34, 44, 0.15);
+        }
+
+        .topbar-carrot-icon {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .cart-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.55rem 0.9rem;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .cart-btn:hover {
+            border-color: var(--accent-red);
+            background: var(--bg-card-hover);
+            box-shadow: 0 4px 12px rgba(226, 34, 44, 0.15);
+        }
+
+        .cart-badge {
+            background: var(--accent-red);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 0.12rem 0.45rem;
+            border-radius: 999px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.75rem 1.25rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Category Rows */
+        .category-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .category-row-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2.5px solid var(--border-color);
+        }
+
+        .cat-row-icon {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            background: transparent;
+            border: none;
+        }
+
+        .category-row-header h2 {
+            font-family: var(--font-brand);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .items-grid, .category-row-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* Item Card Updates */
+        .item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .item-card:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Inner Square Image Area Updated */
+        .item-img-container {
+            width: 100%;
+            height: 130px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.85rem;
+            position: relative;
+        }
+
+        .item-img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 6px 8px rgba(0,0,0,0.12));
+            background: transparent;
+        }
+
+        .item-card:hover .item-img {
+            transform: scale(1.08);
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .item-name {
+            font-family: var(--font-brand);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+        }
+
+        .item-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .item-price {
+            font-family: var(--font-brand);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        /* Softer Button Design */
+        .add-cart-btn {
+            background: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            padding: 0.55rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 12px rgba(226, 34, 44, 0.2);
+        }
+
+        .add-cart-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(226, 34, 44, 0.3);
+            background: var(--accent-hover);
+        }
+
+        .add-cart-btn:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(226, 34, 44, 0.2);
+        }
+        
+        .add-cart-btn:disabled {
+            background: #45454a;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Empty Listings Container */
+        .listings-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 4.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .empty-icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            background: transparent;
+        }
+
+        .gagerror-img {
+            max-width: 96px;
+            max-height: 96px;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        .empty-title {
+            font-family: var(--font-brand);
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .empty-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 380px;
+            line-height: 1.5;
+            margin-bottom: 1.75rem;
+        }
+
+        .notify-btn {
+            background: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            box-shadow: 0 4px 12px rgba(226, 34, 44, 0.2);
+        }
+
+        .notify-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Plain Sales Tally */
+        .plain-tally-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2.5rem 0 2rem;
+            text-align: center;
+        }
+
+        .plain-tally-text {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .plain-tally-text span {
+            color: var(--accent-red);
+            font-weight: 800;
+        }
+
+        /* FAQ Accordion Section */
+        .faq-section {
+            margin-top: 2.5rem;
+            max-width: 840px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .faq-section-title {
+            font-family: var(--font-brand);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .faq-section-title i {
+            color: var(--accent-red);
+        }
+
+        .faq-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .faq-question-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .faq-icon-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-light);
+            color: var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .faq-question i.chevron {
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .faq-item.open .faq-question i.chevron {
+            transform: rotate(180deg);
+            color: var(--accent-red);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 1.2rem 1rem 3.4rem;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        /* Clean Game Selector Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 150;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-window {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 340px;
+            padding: 1.25rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-brand);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .close-modal-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--text-main);
+        }
+
+        .flat-game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .flat-game-item {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.65rem 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+
+        .flat-game-item:hover, .flat-game-item.selected {
+            border-color: var(--accent-red);
+            background: var(--bg-card-hover);
+        }
+
+        .flat-game-icon {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: transparent;
+        }
+
+        .flat-game-name {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .flat-game-item.selected .flat-game-name {
+            color: var(--accent-red);
+        }
+
+        /* Cart Drawer */
+        .cart-drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.25s ease;
+        }
+
+        .cart-drawer-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 380px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 101;
+            transform: translateX(100%);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.25s ease;
+        }
+
+        .cart-drawer-overlay.open .cart-drawer {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            font-family: var(--font-brand);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 6px;
+        }
+
+        .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .cart-body {
+            flex: 1;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            overflow-y: auto;
+        }
+
+        /* Cart inner zero-state centered style */
+        .cart-body.empty-state {
+            justify-content: center;
+        }
+
+        .cart-item {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cart-item-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            padding: 2px;
+        }
+
+        .cart-item-title {
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: var(--text-main);
+        }
+
+        .cart-item-price {
+            font-family: var(--font-mono);
+            font-size: 0.825rem;
+            font-weight: 800;
+            color: var(--accent-red);
+        }
+
+        .cart-item-remove {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.35rem;
+            border-radius: 6px;
+        }
+
+        .cart-item-remove:hover {
+            color: #ef4444;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 7px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .qty-btn:hover:not(:disabled) {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .cart-item-qty-num {
+            min-width: 18px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .cart-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-main);
+        }
+        
+        /* Promo Input */
+        .promo-section { 
+            display: flex; 
+            gap: 0.5rem; 
+            margin-bottom: 1rem; 
+        }
+        
+        .promo-input { 
+            flex: 1; 
+            padding: 0.65rem 0.85rem; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            font-size: 0.85rem; 
+            font-family: var(--font-body); 
+            outline: none; 
+            color: var(--text-main);
+        }
+        
+        .promo-input:focus { 
+            border-color: var(--accent-red); 
+        }
+        
+        .promo-btn { 
+            background: var(--bg-card-hover); 
+            border: 1px solid var(--border-color); 
+            padding: 0 1rem; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-family: var(--font-body); 
+            color: var(--text-main);
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        
+        .promo-btn:hover { 
+            background: var(--border-hover); 
+        }
+
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.85rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent-red);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(226, 34, 44, 0.2);
+        }
+
+        .checkout-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: var(--border-color);
+            color: var(--text-muted);
+            box-shadow: none;
+        }
+
+        /* Roblox Verification Modal Flow */
+        .roblox-verify-input {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .roblox-verify-input:focus {
+            border-color: var(--accent-red);
+        }
+
+        .roblox-profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .roblox-avatar-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-red);
+            color: var(--text-main);
+            padding: 0.85rem 1.25rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            z-index: 200;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.75rem 1.25rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .items-grid, .category-row-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 0.85rem;
+            }
+            .item-card { padding: 0.9rem; }
+            .item-img-container { height: 110px; }
+            .cart-btn span:not(.cart-badge) { display: none; }
+            .cart-drawer { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fullscreen Loading Overlay -->
+    <div class="loader-overlay" id="pageLoader">
+        <div class="spinner"></div>
+        <div class="loader-text">Loading bloxharvest...</div>
+    </div>
+
+    <!-- Universal Promo Banner -->
+    <div class="promo-banner">
+        Use code <span>INSTAGRAM</span> for 5% off at checkout!
+    </div>
+
+    <header>
+        <div class="topbar">
+            <!-- Brand Logo & Name -->
+            <a class="brand" onclick="resetView()">
+                <img src="logo.PNG" alt="bloxharvest logo" class="brand-logo" onerror="this.style.display='none';">
+                <span class="brand-text">bloxharvest</span>
+            </a>
+
+            <div class="topbar-right">
+                <!-- Topbar Search -->
+                <div class="search-container">
+                    <div class="search-expandable" id="searchExpandable">
+                        <button class="search-icon-btn" onclick="toggleSearch()" title="Search">
+                            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+                        </button>
+                        <input type="text" class="search-input-field" id="searchInput" placeholder="Search items..." oninput="filterItems()">
+                        <button class="search-close-btn" onclick="closeSearch()">
+                            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Select Game Dropdown Trigger -->
+                <button class="game-select-btn" onclick="toggleGameModal(true)">
+                    <img src="carrot.PNG" alt="Carrot" class="topbar-carrot-icon" onerror="this.onerror=null; this.src='carrot.PNG';">
+                    <span id="topbarGameLabel">Grow A Garden 2</span>
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
+                </button>
+
+                <!-- Cart Button -->
+                <button class="cart-btn" onclick="toggleCart(true)">
+                    <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
+                    <span>Cart</span>
+                    <span class="cart-badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Category Rows -->
+        <div class="category-rows" id="categoryRows"></div>
+
+        <!-- Empty Listings Container -->
+        <div class="listings-container" id="listingsContainer" style="display: none;">
+            <div class="empty-icon-box">
+                <img src="gagerror.PNG" alt="No Items" class="gagerror-img" onerror="this.onerror=null; this.src='gagerror.PNG';">
+            </div>
+            <div class="empty-title" id="listingsTitle">Grow A Garden 2 Marketplace</div>
+            <p class="empty-desc">
+                Currently, there are no active listings matching your search. Check back shortly.
+            </p>
+            <button class="notify-btn" onclick="showToast('Alert preferences saved!')">
+                <i data-lucide="bell" style="width: 16px; height: 16px;"></i>
+                Notify When Items Arrive
+            </button>
+        </div>
+
+        <!-- Plain Sales Tally -->
+        <div class="plain-tally-container">
+            <div class="plain-tally-text"><span id="salesTally">0</span> Total Items Sold</div>
+        </div>
+
+        <!-- FAQ Section with SVG Icons -->
+        <div class="faq-section">
+            <div class="faq-section-title">
+                <i data-lucide="help-circle" style="width: 20px; height: 20px;"></i>
+                Frequently Asked Questions
+            </div>
+            <div class="faq-accordion">
+                <!-- Q1 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>How fast will I receive my items?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Deliveries are automated through our instant dispatch system and usually complete within 5 to 15 minutes after payment confirmation.
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>Is buying from bloxharvest safe?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! All items are securely sourced and transferred directly to your in-game inventory without requiring account credentials.
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>What payment methods are supported?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        We support all major credit cards, debit cards, Apple Pay, Google Pay, and popular online payment gateways.
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="user-check" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>What if I entered the wrong username?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        If you entered an incorrect username during checkout, open a live chat ticket immediately with your order ID to update it.
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="message-circle" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>How do I contact customer support?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        You can reach our 24/7 live support team anytime via our Discord community or by clicking the help widget in your dashboard.
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <div class="faq-question-left">
+                            <div class="faq-icon-badge">
+                                <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <span>Can I request a refund?</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="chevron" style="width: 16px; height: 16px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Refunds are guaranteed for any order that cannot be fulfilled or has not been delivered within 24 hours.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Selector Modal -->
+    <div class="modal-overlay" id="gameModal" onclick="if(event.target === this) toggleGameModal(false)">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Select Game</h3>
+                <button class="close-modal-btn" onclick="toggleGameModal(false)">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            
+            <div class="flat-game-list">
+                <div class="flat-game-item selected" onclick="toggleGameModal(false)">
+                    <img src="gag.PNG" alt="GAG2" class="flat-game-icon" onerror="this.onerror=null; this.src='gag.PNG';">
+                    <span class="flat-game-name">Grow A Garden 2</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer-overlay" id="cartOverlay" onclick="if(event.target === this) toggleCart(false)">
+        <div class="cart-drawer">
+            <div class="cart-header">
+                <h3>
+                    <i data-lucide="shopping-bag" style="color: var(--accent-red); width: 18px; height: 18px;"></i>
+                    Your Cart
+                </h3>
+                <button class="close-btn" onclick="toggleCart(false)">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            
+            <div class="cart-body" id="cartBody">
+                <!-- Javascript will populate this -->
+            </div>
+
+            <div class="cart-footer">
+                <!-- Promo Code Section -->
+                <div class="promo-section" id="promoContainer">
+                    <input type="text" id="promoInput" class="promo-input" placeholder="Promo code">
+                    <button class="promo-btn" onclick="applyPromo()">Apply</button>
+                </div>
+
+                <div class="cart-total-row" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">$0.00</span>
+                </div>
+                <div class="cart-total-row" id="discountRow" style="display: none; font-size: 0.85rem; color: #10b981; font-weight: 600;">
+                    <span>Discount (5%)</span>
+                    <span id="cartDiscount">-$0.00</span>
+                </div>
+                <div class="cart-total-row" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+                    <span>Order fee</span>
+                    <span id="cartFee">$0.10</span>
+                </div>
+                <div class="cart-total-row">
+                    <span>Total</span>
+                    <span id="cartTotal" style="font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent-red);">$0.00</span>
+                </div>
+                <p id="cartMinNote" style="display: none; font-size: 0.78rem; color: var(--text-muted); margin: -0.4rem 0 0.75rem;"></p>
+
+                <!-- Roblox username, inline in the cart itself -->
+                <div id="robloxInputStep" style="margin-top: 0.5rem; display: none;">
+                    <input type="text" id="robloxUsernameInput" class="roblox-verify-input" placeholder="Roblox username (for delivery)" style="margin-bottom: 0.6rem;" />
+                    <button class="checkout-btn" id="checkoutBtn" disabled onclick="verifyRobloxUser()">Verify Username</button>
+                </div>
+
+                <div id="robloxConfirmStep" style="display: none; margin-top: 0.5rem;">
+                    <div class="roblox-profile-card" style="margin-bottom: 0.6rem;">
+                        <img id="robloxAvatarImg" class="roblox-avatar-img" src="" alt="Avatar">
+                        <div style="text-align: left;">
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">Delivering to</div>
+                            <div id="robloxConfirmedName" style="font-weight: 800; font-size: 1.05rem; color: var(--text-main);"></div>
+                        </div>
+                    </div>
+                    <button class="checkout-btn" id="finalCheckoutBtn" onclick="confirmCheckoutAndPay()">Continue to Payment</button>
+                    <button onclick="resetRobloxModal()" style="width: 100%; margin-top: 0.6rem; background: transparent; border: none; color: var(--text-muted); cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 0.85rem;">Not you? Change username</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i data-lucide="check-circle-2" style="color: var(--accent-red); width: 18px; height: 18px;"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <footer>
+        &copy; 2026 <strong>bloxharvest</strong>. Fast & cheap Roblox marketplace.
+    </footer>
+
+    <script>
+        // Full original Array restored with the fallback items. 
+        let defaultItems = [
+          { "id": "gag2-agp", "game": "Grow A Garden 2", "name": "Atlantic Giant Pumpkin", "category": "Seeds", "price": 0.05, "image": "agp.PNG" },
+          { "id": "gag2-sswc", "game": "Grow A Garden 2", "name": "Super Syrup Watering Can", "category": "Utilities", "price": 0.06, "image": "sswc.PNG" },
+          { "id": "gag2-starfruit", "game": "Grow A Garden 2", "name": "Starfruit", "category": "Seeds", "price": 0.13, "image": "starfruit.PNG" },
+          { "id": "gag2-ghost-pepper", "game": "Grow A Garden 2", "name": "Ghost Pepper", "category": "Seeds", "price": 0.35, "image": "ghostpepper.PNG" },
+          { "id": "gag2-dragons-breath", "game": "Grow A Garden 2", "name": "Dragon's Breath", "category": "Seeds", "price": 0.45, "image": "dragonsbreath.PNG" },
+          { "id": "gag2-moon-bloom", "game": "Grow A Garden 2", "name": "Moon Bloom", "category": "Seeds", "price": 0.5, "image": "moonbloom.PNG" },
+          { "id": "gag2-venus-fly-trap", "game": "Grow A Garden 2", "name": "Venus Fly Trap", "category": "Seeds", "price": 0.3, "image": "venusflytrap.PNG" },
+          { "id": "gag2-legendary-sprinkler", "game": "Grow A Garden 2", "name": "Legendary Sprinkler", "category": "Utilities", "price": 0.45, "image": "sprinkler_legendary.PNG" },
+          { "id": "gag2-super-watering-can", "game": "Grow A Garden 2", "name": "Super Watering Can", "category": "Utilities", "price": 0.99, "image": "superwateringcan.PNG" },
+          { "id": "gag2-wheelbarrow", "game": "Grow A Garden 2", "name": "Wheelbarrow", "category": "Utilities", "price": 0.03, "image": "wheelbarrow.PNG" },
+          { "id": "gag2-shadow-dragon", "game": "Grow A Garden 2", "name": "Shadow Dragon", "category": "Pets", "price": 1.20, "image": "shadowdragon.PNG" }
+        ];
+
+        let allItems = [];
+        let cart = [];
+        let verifiedRobloxUser = "";
+        let currentPromo = "";
+
+        const API_BASE = "https://blosharvest-production.up.railway.app";
+        const MIN_ORDER_TOTAL = 0.50;
+        const ORDER_FEE = 0.10;
+        const MAX_QTY_PER_ITEM = 99;
+        
+        const CATEGORY_ORDER = ['Seeds', 'Utilities', 'Pets'];
+        const CATEGORY_ICONS = { Seeds: 'seeds.PNG', Utilities: 'utilities.PNG', Pets: 'pets.PNG' };
+
+        function shuffleArray(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        async function fetchInitialData() {
+            try {
+                const itemsRes = await fetch(`${API_BASE}/api/items`);
+                if (itemsRes.ok) {
+                    const fetchedItems = await itemsRes.json();
+                    if(fetchedItems && fetchedItems.length > 0) {
+                        allItems = shuffleArray(fetchedItems);
+                    } else {
+                        allItems = shuffleArray(defaultItems); 
+                    }
+                } else {
+                    allItems = shuffleArray(defaultItems);
+                }
+                
+                const statsRes = await fetch(`${API_BASE}/api/stats`);
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    document.getElementById('salesTally').innerText = stats.sales || 0;
+                }
+            } catch (err) {
+                console.warn("Backend API not reachable. Using fallback layout.");
+                allItems = shuffleArray(defaultItems);
+            }
+
+            renderItems();
+            updateCartUI(); // Initialize cart empty state
+            
+            // Artificial delay to ensure smooth rendering before hiding loader
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 600);
+        }
+
+        function getImageSrc(path, fallback) {
+            if (!path) return fallback;
+            return path.replace(/^items\//i, '');
+        }
+
+        function toggleSearch() {
+            const el = document.getElementById('searchExpandable');
+            if (el.classList.contains('active')) {
+                const input = document.getElementById('searchInput');
+                if (input.value.trim() === '') {
+                    closeSearch();
+                }
+            } else {
+                openSearch();
+            }
+        }
+
+        function openSearch() {
+            const el = document.getElementById('searchExpandable');
+            el.classList.add('active');
+            setTimeout(() => {
+                document.getElementById('searchInput').focus();
+            }, 100);
+        }
+
+        function closeSearch() {
+            const el = document.getElementById('searchExpandable');
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            el.classList.remove('active');
+            renderItems();
+        }
+        
+        function filterItems() {
+            renderItems();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('categoryRows');
+            const emptyContainer = document.getElementById('listingsContainer');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            const categoriesPresent = [...new Set(allItems.map(i => i.category))];
+            const orderedCategories = [
+                ...CATEGORY_ORDER.filter(c => categoriesPresent.includes(c)),
+                ...categoriesPresent.filter(c => !CATEGORY_ORDER.includes(c)).sort()
+            ];
+
+            let anyVisible = false;
+            const sectionsHtml = orderedCategories.map(cat => {
+                const itemsInCat = allItems.filter(item =>
+                    item.category === cat && item.name.toLowerCase().includes(searchVal)
+                );
+                if (itemsInCat.length === 0) return '';
+                anyVisible = true;
+
+                const icon = CATEGORY_ICONS[cat] || 'seeds.PNG';
+                const cardsHtml = itemsInCat.map(item => {
+                    const imgSrc = getImageSrc(item.image, 'agp.PNG');
+                    return `
+                        <div class="item-card">
+                            <div>
+                                <div class="item-img-container">
+                                    <img src="${imgSrc}" alt="${item.name}" class="item-img" onerror="this.onerror=null; this.src='agp.PNG';">
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                </div>
+                            </div>
+                            <div class="item-card-footer">
+                                <div class="item-price">$${Number(item.price).toFixed(2)}</div>
+                                <button class="add-cart-btn" onclick="addToCart('${item.id}')">
+                                    <i data-lucide="plus" style="width: 15px; height: 15px;"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="category-row">
+                        <div class="category-row-header">
+                            <img src="${icon}" alt="${cat}" class="cat-row-icon" onerror="this.style.display='none';">
+                            <h2>${cat}</h2>
+                        </div>
+                        <div class="category-row-grid">${cardsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            if (!anyVisible) {
+                container.style.display = 'none';
+                emptyContainer.style.display = 'flex';
+                return;
+            }
+
+            container.style.display = 'flex';
+            emptyContainer.style.display = 'none';
+            container.innerHTML = sectionsHtml;
+
+            lucide.createIcons();
+        }
+
+        function addToCart(itemId) {
+            const item = allItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const existing = cart.find(c => c.id === itemId);
+            if (existing) {
+                if (existing.quantity >= MAX_QTY_PER_ITEM) {
+                    showToast(`You've maxed out "${item.name}" for one order.`);
+                    return;
+                }
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+            updateCartUI();
+            showToast(`Added "${item.name}" to cart!`);
+        }
+
+        function changeQty(index, delta) {
+            const line = cart[index];
+            if (!line) return;
+            const newQty = line.quantity + delta;
+            if (newQty < 1) {
+                removeFromCart(index);
+                return;
+            }
+            if (newQty > MAX_QTY_PER_ITEM) {
+                showToast(`You've maxed out "${line.name}" for one order.`);
+                return;
+            }
+            line.quantity = newQty;
+            updateCartUI();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function applyPromo() {
+            const val = document.getElementById('promoInput').value.trim().toUpperCase();
+            if (val === 'INSTAGRAM') {
+                currentPromo = 'INSTAGRAM';
+                showToast("5% off applied!");
+            } else {
+                currentPromo = "";
+                showToast("Invalid promo code");
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalUnits = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalUnits;
+            
+            const cartBody = document.getElementById('cartBody');
+            const cartSubtotalEl = document.getElementById('cartSubtotal');
+            const discountRow = document.getElementById('discountRow');
+            const cartDiscountEl = document.getElementById('cartDiscount');
+            const cartFeeEl = document.getElementById('cartFee');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const minNote = document.getElementById('cartMinNote');
+            const inputStep = document.getElementById('robloxInputStep');
+            const confirmStep = document.getElementById('robloxConfirmStep');
+
+            if (cart.length === 0) {
+                cartBody.classList.add('empty-state');
+                cartBody.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); margin-top: 2rem;">
+                        <i data-lucide="shopping-cart" style="width: 44px; height: 44px; opacity: 0.3; margin-bottom: 0.75rem;"></i>
+                        <p style="font-family: var(--font-brand); font-weight: 800; color: var(--text-main);">Your cart is empty</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">No items added yet.</p>
+                    </div>
+                `;
+                
+                cartSubtotalEl.textContent = '$0.00';
+                discountRow.style.display = 'none';
+                cartFeeEl.textContent = `$${ORDER_FEE.toFixed(2)}`;
+                cartTotal.textContent = '$0.00';
+                
+                minNote.style.display = 'none';
+                inputStep.style.display = 'none';
+                confirmStep.style.display = 'none';
+            } else {
+                cartBody.classList.remove('empty-state');
+                
+                // Calculations including the new Promo Logic
+                const subtotal = cart.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+                const discount = currentPromo === 'INSTAGRAM' ? subtotal * 0.05 : 0;
+                const discountedSubtotal = subtotal - discount;
+                const total = discountedSubtotal + ORDER_FEE;
+
+                cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+                
+                if (discount > 0) {
+                    discountRow.style.display = 'flex';
+                    cartDiscountEl.textContent = `-$${discount.toFixed(2)}`;
+                } else {
+                    discountRow.style.display = 'none';
+                }
+
+                cartFeeEl.textContent = `$${ORDER_FEE.toFixed(2)}`;
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+
+                const meetsMinimum = discountedSubtotal >= MIN_ORDER_TOTAL;
+                
+                if (!meetsMinimum) {
+                    minNote.style.display = 'block';
+                    minNote.textContent = `Add $${(MIN_ORDER_TOTAL - discountedSubtotal).toFixed(2)} more to reach the $${MIN_ORDER_TOTAL.toFixed(2)} minimum order.`;
+                } else {
+                    minNote.style.display = 'none';
+                }
+
+                inputStep.style.display = (meetsMinimum && !verifiedRobloxUser) ? 'block' : 'none';
+                confirmStep.style.display = (meetsMinimum && verifiedRobloxUser) ? 'block' : 'none';
+                checkoutBtn.disabled = !meetsMinimum;
+
+                // Render Cart Items
+                cartBody.innerHTML = cart.map((item, index) => {
+                    const imgSrc = getImageSrc(item.image, 'agp.PNG');
+                    const lineTotal = Number(item.price) * item.quantity;
+                    return `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <img src="${imgSrc}" alt="${item.name}" class="cart-item-img" onerror="this.onerror=null; this.src='agp.PNG';">
+                                <div>
+                                    <div class="cart-item-title">${item.name}</div>
+                                    <div class="cart-item-price">$${lineTotal.toFixed(2)} <span style="color: var(--text-muted); font-weight: 600;">($${Number(item.price).toFixed(2)} ea)</span></div>
+                                </div>
+                            </div>
+                            <div class="cart-item-qty">
+                                <button class="qty-btn" onclick="changeQty(${index}, -1)" title="Decrease">−</button>
+                                <span class="cart-item-qty-num">${item.quantity}</span>
+                                <button class="qty-btn" onclick="changeQty(${index}, 1)" ${item.quantity >= MAX_QTY_PER_ITEM ? 'disabled' : ''} title="Increase">+</button>
+                                <button class="cart-item-remove" onclick="removeFromCart(${index})" title="Remove">
+                                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            lucide.createIcons();
+        }
+
+        function resetRobloxModal() {
+            verifiedRobloxUser = "";
+            document.getElementById('robloxUsernameInput').value = '';
+            updateCartUI();
+        }
+
+        async function verifyRobloxUser() {
+            const username = document.getElementById('robloxUsernameInput').value.trim();
+            if (!username) return showToast("Please enter a username.");
+            
+            const btn = document.getElementById('checkoutBtn');
+            btn.innerText = "Searching...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/roblox/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    verifiedRobloxUser = data.username;
+                    document.getElementById('robloxConfirmedName').innerText = data.username;
+                    document.getElementById('robloxAvatarImg').src = data.imgUrl;
+                    updateCartUI();
+                } else {
+                    showToast("User not found. Check spelling.");
+                }
+            } catch (err) {
+                showToast("Server error verifying user.");
+            } finally {
+                btn.innerText = "Verify Username";
+                btn.disabled = false;
+            }
+        }
+
+        async function confirmCheckoutAndPay() {
+            const btn = document.getElementById('finalCheckoutBtn');
+            btn.innerText = "Generating Invoice...";
+            btn.disabled = true;
+
+            try {
+                // Now includes promoCode in the payload
+                const res = await fetch(`${API_BASE}/api/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        items: cart, 
+                        robloxUser: verifiedRobloxUser, 
+                        promoCode: currentPromo 
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    if (data.orderId) {
+                        localStorage.setItem('activeOrderId', data.orderId);
+                        localStorage.setItem('activeOrderUser', verifiedRobloxUser);
+                    }
+                    window.location.href = data.checkoutUrl; 
+                } else {
+                    showToast(data.message || "Failed to generate checkout link.");
+                    btn.innerText = "Continue to Payment";
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                showToast("Server error during checkout.");
+                btn.innerText = "Continue to Payment";
+                btn.disabled = false;
+            }
+        }
+
+        function toggleFaq(button) { button.parentElement.classList.toggle('open'); }
+        function toggleGameModal(open) { document.getElementById('gameModal').classList.toggle('open', open); }
+        function toggleCart(open) { document.getElementById('cartOverlay').classList.toggle('open', open); }
+        function resetView() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            fetchInitialData();
+        };
+    </script>
+</body>
+</html>

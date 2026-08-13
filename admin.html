@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bloxharvest admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+            font-family: 'GrowingGarden';
+            src: url('GrowingGarden-Regular.ttf') format('truetype'),
+                 url('GrowingGarden-Regular.otf') format('opentype');
+            font-weight: normal; font-style: normal;
+        }
+
+        :root {
+            --bg-main: #fbfbfd;
+            --bg-card: #ffffff;
+            --bg-card-alt: #f3f3f6;
+            --border-color: #e2e2e8;
+            --accent-red: #e2222c;
+            --text-main: #1a1a1c;
+            --text-muted: #75757c;
+            --font-brand: 'GrowingGarden', 'Comic Neue', 'Comic Sans MS', sans-serif;
+            --font-body: 'Comic Neue', 'Comic Sans MS', sans-serif;
+        }
+
+        body { margin: 0; background-color: var(--bg-main); color: var(--text-main); font-family: var(--font-body); min-height: 100vh; position: relative; }
+
+        body::before {
+            content: ''; position: fixed; inset: -80px;
+            background-image: url('logo.PNG'); background-size: 40px 40px; background-repeat: repeat;
+            opacity: 0.05; filter: grayscale(100%); animation: moveLogoBg 30s linear infinite; pointer-events: none; z-index: 0;
+        }
+        @keyframes moveLogoBg { 0% { transform: translate(0, 0); } 100% { transform: translate(80px, 80px); } }
+
+        header {
+            width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-color); border-top: 4px solid var(--accent-red);
+            padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        }
+        .brand { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .brand-text { font-family: var(--font-brand); font-size: 2.1rem; color: var(--accent-red); text-decoration: none; }
+        .header-controls { display: flex; align-items: center; gap: 1rem; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+        
+        .panel { background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; box-shadow: 0 4px 14px rgba(0,0,0,0.06); margin-bottom: 2rem; }
+        .panel h2 { margin-top: 0; font-family: var(--font-brand); font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        th { color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+        .price-input { width: 80px; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-body); outline: none; }
+        .price-input:focus { border-color: var(--accent-red); }
+
+        button { background: var(--accent-red); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; font-size: 0.9rem; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 0.4rem; }
+        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(226, 34, 44, 0.2); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--accent-red); color: var(--accent-red); }
+        .btn-success { background: #10b981; }
+        .btn-secondary { background: var(--border-color); color: var(--text-main); }
+
+        /* --- Upgraded Login Screen UI --- */
+        #loginScreen { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; padding: 1.25rem; }
+        .login-box { 
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            padding: 3.5rem 2.5rem; border-radius: 20px; text-align: center; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.5) inset; 
+            border: 1px solid var(--border-color); width: 100%; max-width: 420px; 
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .login-icon-wrapper {
+            width: 64px; height: 64px; border-radius: 16px; background: rgba(226, 34, 44, 0.1);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;
+            color: var(--accent-red); box-shadow: 0 4px 12px rgba(226, 34, 44, 0.15);
+        }
+        .login-box h2 {
+            font-family: var(--font-brand); color: var(--text-main); font-size: 2.2rem; 
+            margin: 0 0 0.5rem 0; letter-spacing: -0.02em;
+        }
+        .login-box p {
+            color: var(--text-muted); font-size: 0.95rem; margin: 0 0 2rem 0; line-height: 1.5;
+        }
+        .input-group { width: 100%; position: relative; margin-bottom: 1.5rem; }
+        .input-group i {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); width: 18px; height: 18px; transition: color 0.3s;
+        }
+        input.auth-input { 
+            width: 100%; padding: 1rem 1rem 1rem 2.8rem; border-radius: 12px; 
+            border: 2px solid var(--border-color); font-size: 1rem; outline: none; 
+            background: rgba(255,255,255,0.9); transition: all 0.3s ease; box-sizing: border-box;
+            font-weight: 600; font-family: var(--font-body);
+        }
+        input.auth-input:focus { 
+            border-color: var(--accent-red); background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(226, 34, 44, 0.1);
+        }
+        input.auth-input:focus + i { color: var(--accent-red); }
+        .login-btn {
+            width: 100%; padding: 1.1rem; font-size: 1.05rem; border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-red) 0%, #c81b24 100%);
+            text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            box-shadow: 0 8px 20px rgba(226, 34, 44, 0.3); transform: translateY(-2px);
+        }
+
+        #dashboard { display: none; }
+        .grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        canvas { background: transparent; border-radius: 8px; margin-top: 1rem; width: 100%; }
+        
+        .chat-list { max-height: 200px; overflow-y: auto; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .chat-ticket { padding: 0.85rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; }
+        .chat-ticket.active { border: 2px solid var(--accent-red); background: rgba(226, 34, 44, 0.05); }
+        .chat-box { display: flex; flex-direction: column; gap: 0.75rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; height: 250px; overflow-y: auto; margin-bottom: 1rem; }
+        .chat-msg { padding: 0.7rem 1rem; border-radius: 14px; max-width: 85%; font-size: 0.9rem; }
+        .msg-admin { background: var(--accent-red); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg-user { background: var(--bg-card-alt); color: var(--text-main); border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 4px; }
+        
+        .chat-controls { display: flex; gap: 0.5rem; }
+        .chat-controls input { flex: 1; padding: 0.85rem; border: 1px solid var(--border-color); border-radius: 10px; outline: none; }
+
+        .badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.3rem;}
+        .badge-pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .badge-paid { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .badge-completed { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        .time-elapsed { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-icon-wrapper">
+                <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h2>Admin Portal</h2>
+            <p>Enter the master password to access your bloxharvest dashboard and manage orders.</p>
+            
+            <div class="input-group">
+                <input type="password" id="passInput" class="auth-input" placeholder="Master Password" onkeypress="if(event.key === 'Enter') login()">
+                <i data-lucide="lock"></i>
+            </div>
+            
+            <button class="login-btn" onclick="login()">Authenticate</button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <header>
+            <a href="#" class="brand">
+                <img src="logo.PNG" alt="logo" style="height: 36px; width: auto; border-radius: 8px;" onerror="this.style.display='none';">
+                <span class="brand-text">bloxharvest admin</span>
+            </a>
+            <div class="header-controls">
+                <button class="btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="grid">
+                <div class="panel">
+                    <h2><i data-lucide="trending-up" style="color: var(--accent-red);"></i> Sales Activity</h2>
+                    <canvas id="salesChart" width="500" height="250"></canvas>
+                </div>
+                
+                <div class="panel" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                    <h2><i data-lucide="bar-chart-2" style="color: var(--accent-red);"></i> Overview</h2>
+                    <h1 style="font-size: 3.5rem; color: var(--text-main); margin: 0; font-family: var(--font-brand);" id="totalSales">0</h1>
+                    <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Total Items Sold</p>
+                    <h1 style="font-size: 3.5rem; color: #10b981; margin: 1.5rem 0 0 0; font-family: var(--font-brand);" id="totalOrders">0</h1>
+                    <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Active Orders</p>
+                </div>
+
+                <div class="panel">
+                    <h2><i data-lucide="message-square" style="color: var(--accent-red);"></i> Live Support Hub</h2>
+                    <div class="chat-list" id="chatList"></div>
+                    <div id="activeChatArea" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <div style="font-size: 0.85rem; font-weight: 600;">Ticket: <strong id="activeChatId"></strong></div>
+                            <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; color: #ef4444; border-color: #ef4444;" onclick="closeTicket()">
+                                Close Ticket
+                            </button>
+                        </div>
+                        <div class="chat-box" id="adminChatBox"></div>
+                        <div class="chat-controls">
+                            <input type="text" id="adminChatInput" placeholder="Type response..." onkeypress="if(event.key === 'Enter') sendAdminMsg()">
+                            <button id="adminChatBtn" onclick="sendAdminMsg()"><i data-lucide="send" style="width: 16px; height: 16px;"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 2rem;">
+                <h2><i data-lucide="shopping-bag" style="color: var(--accent-red);"></i> Recent Orders</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Roblox User</th>
+                                <th>Status</th>
+                                <th>Time Elapsed</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 2rem;">
+                <h2><i data-lucide="package" style="color: var(--accent-red);"></i> Inventory Editor</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="60">Icon</th>
+                                <th>Item Name</th>
+                                <th>Price ($)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const API_BASE = "https://blosharvest-production.up.railway.app"; 
+        let token = localStorage.getItem('adminToken');
+        let currentActiveChat = null;
+        let globalChatsData = {};
+        let globalOrdersData = [];
+
+        if (token) showDashboard();
+
+        async function login() {
+            const pass = document.getElementById('passInput').value;
+            const res = await fetch(`${API_BASE}/api/admin/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({password: pass}) });
+            const data = await res.json();
+            if (data.success) { token = data.token; localStorage.setItem('adminToken', token); showDashboard(); } 
+            else alert('Incorrect Password');
+        }
+
+        function logout() { localStorage.removeItem('adminToken'); window.location.reload(); }
+
+        async function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            await loadData();
+            setInterval(loadData, 5000);
+        }
+
+        function timeElapsed(dateStr) {
+            if (!dateStr) return 'Unknown';
+            const diffMins = Math.floor((new Date() - new Date(dateStr)) / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            const diffHrs = Math.floor(diffMins / 60);
+            if (diffHrs < 24) return `${diffHrs}h ${diffMins % 60}m ago`;
+            return `${Math.floor(diffHrs / 24)}d ${diffHrs % 24}h ago`;
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/dashboard`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.status === 401) return logout();
+                const data = await res.json();
+                globalOrdersData = data.orders;
+                
+                document.getElementById('totalSales').innerText = data.stats.sales || 0;
+                document.getElementById('totalOrders').innerText = data.orders.filter(o => o.status !== 'Completed').length;
+
+                document.getElementById('ordersBody').innerHTML = data.orders.map(o => {
+                    let badgeClass, icon;
+                    if (o.status === 'Completed') { badgeClass = 'badge-completed'; icon = 'check-circle-2'; }
+                    else if (o.status === 'Paid') { badgeClass = 'badge-paid'; icon = 'credit-card'; }
+                    else { badgeClass = 'badge-pending'; icon = 'clock'; }
+                    
+                    return `
+                    <tr>
+                        <td style="font-family: monospace; font-weight: 700;">${o.id}</td>
+                        <td style="font-weight: 800;">${o.robloxUser}</td>
+                        <td><span class="badge ${badgeClass}"><i data-lucide="${icon}" style="width:12px;height:12px;"></i> ${o.status}</span></td>
+                        <td><div class="time-elapsed"><i data-lucide="timer" style="width:14px;height:14px;"></i> ${timeElapsed(o.date)}</div></td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn-outline" onclick="copyOrderLink('${o.id}', '${o.robloxUser}')"><i data-lucide="link" style="width: 14px; height: 14px;"></i> Link</button>
+                                ${o.status === 'Pending' ? `<button class="btn-success" style="background:#3b82f6;" onclick="updateOrderStatus('${o.id}', 'Paid')"><i data-lucide="dollar-sign" style="width: 14px; height: 14px;"></i> Mark Paid</button>` : ''}
+                                ${o.status === 'Paid' ? `<button class="btn-success" onclick="updateOrderStatus('${o.id}', 'Completed')"><i data-lucide="check" style="width: 14px; height: 14px;"></i> Done</button>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `}).join('');
+
+                if (!document.activeElement.classList.contains('price-input')) {
+                    document.getElementById('inventoryBody').innerHTML = data.items.map(i => `
+                        <tr>
+                            <td><img src="${i.image || 'agp.PNG'}" style="width:40px; height:40px; object-fit:contain; border-radius:8px;"></td>
+                            <td style="font-weight: 700;">${i.name}</td>
+                            <td><input type="number" step="0.01" id="price_${i.id}" class="price-input" value="${i.price}"></td>
+                            <td><button class="btn-outline" onclick="updateItem('${i.id}')"><i data-lucide="save" style="width:14px;height:14px;"></i> Save</button></td>
+                        </tr>
+                    `).join('');
+                }
+
+                drawChart(data.orders);
+                globalChatsData = data.chats;
+                renderChatList();
+                if (currentActiveChat) renderChatThread(currentActiveChat);
+                lucide.createIcons();
+            } catch (err) {}
+        }
+
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/order/${orderId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                if(res.ok) loadData(); 
+            } catch(e) {}
+        }
+
+        function copyOrderLink(orderId, user) {
+            const link = `${window.location.origin}/order.html?id=${orderId}&user=${user}`;
+            navigator.clipboard.writeText(link).then(() => alert("Custom link copied!"));
+        }
+
+        async function updateItem(itemId) {
+            const newPrice = document.getElementById(`price_${itemId}`).value;
+            const res = await fetch(`${API_BASE}/api/admin/item`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ itemId, price: newPrice }) });
+            if(res.ok) alert('Updated!');
+        }
+
+        function drawChart(orders) {
+            const canvas = document.getElementById('salesChart'); if(!canvas) return;
+            const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const days = []; const salesPerDay = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                days.push(dateStr); salesPerDay[dateStr] = 0;
+            }
+
+            orders.forEach(o => { if(o.date) { const d = new Date(o.date).toISOString().split('T')[0]; if (salesPerDay[d] !== undefined) salesPerDay[d] += 1; } });
+            const dataValues = days.map(d => salesPerDay[d]);
+            const max = Math.max(...dataValues) === 0 ? 5 : Math.max(...dataValues) + 2;
+            
+            ctx.fillStyle = '#ff4b4f'; ctx.strokeStyle = '#ff4b4f'; ctx.lineWidth = 4; ctx.beginPath();
+            dataValues.forEach((val, i) => {
+                const x = (i / (dataValues.length - 1)) * (canvas.width - 40) + 20;
+                const y = canvas.height - ((val / max) * canvas.height) - 20;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            dataValues.forEach((val, i) => {
+                const x = (i / (dataValues.length - 1)) * (canvas.width - 40) + 20;
+                const y = canvas.height - ((val / max) * canvas.height) - 20;
+                ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#1a1a1c'; ctx.font = 'bold 12px sans-serif'; ctx.fillText(val, x - 4, y - 14);
+            });
+        }
+
+        function renderChatList() {
+            const list = document.getElementById('chatList');
+            const chatIds = Object.keys(globalChatsData);
+            if (chatIds.length === 0) { list.innerHTML = '<p>No active chats.</p>'; return; }
+
+            list.innerHTML = chatIds.map(id => `
+                <div class="chat-ticket ${id === currentActiveChat ? 'active' : ''}" onclick="openChat('${id}')">
+                    <div style="font-weight: 800; font-family: monospace;">Ticket: ${id}</div>
+                    <div style="font-size:0.8rem; color: var(--text-muted);">${globalChatsData[id].length} messages</div>
+                </div>
+            `).join('');
+        }
+
+        function openChat(orderId) {
+            currentActiveChat = orderId;
+            document.getElementById('activeChatArea').style.display = 'block';
+            document.getElementById('activeChatId').innerText = orderId;
+            renderChatList();
+            renderChatThread(orderId);
+        }
+
+        function renderChatThread(orderId) {
+            const box = document.getElementById('adminChatBox');
+            const msgs = globalChatsData[orderId] || [];
+            
+            const isScrolledToBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 1;
+            box.innerHTML = msgs.map(m => `<div class="chat-msg ${m.sender === 'admin' ? 'msg-admin' : 'msg-user'}">${m.text}</div>`).join('');
+            if (isScrolledToBottom) box.scrollTop = box.scrollHeight;
+
+            const order = globalOrdersData.find(o => o.id === orderId);
+            const isPending = order && order.status === 'Pending';
+            
+            document.getElementById('adminChatInput').disabled = isPending;
+            document.getElementById('adminChatBtn').disabled = isPending;
+            document.getElementById('adminChatInput').placeholder = isPending ? "Order unpaid. Chat disabled." : "Type response...";
+        }
+
+        async function sendAdminMsg() {
+            if (!currentActiveChat) return;
+            const input = document.getElementById('adminChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            input.value = '';
+            if(!globalChatsData[currentActiveChat]) globalChatsData[currentActiveChat] = [];
+            globalChatsData[currentActiveChat].push({ sender: 'admin', text });
+            renderChatThread(currentActiveChat);
+
+            try { await fetch(`${API_BASE}/api/chat/${currentActiveChat}`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ sender: 'admin', text }) }); } 
+            catch (err) {}
+        }
+
+        async function closeTicket() {
+            if (!currentActiveChat || !confirm("Delete this ticket?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/chat/${currentActiveChat}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) { currentActiveChat = null; document.getElementById('activeChatArea').style.display = 'none'; loadData(); }
+            } catch (e) {}
+        }
+    </script>
+</body>
+</html>
