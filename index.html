@@ -4,6 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>bloxharvest | Grow A Garden 2 Marketplace</title>
+
+    <!-- SEO -->
+    <meta name="description" content="bloxharvest is a fast, secure marketplace for Grow A Garden 2 seeds, pets, and utilities. Instant delivery, safe checkout, and 24/7 support.">
+    <meta name="keywords" content="bloxharvest, Grow A Garden 2, Grow A Garden 2 marketplace, GAG2 seeds, GAG2 pets, roblox marketplace, buy grow a garden items">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="bloxharvest">
+    <link rel="canonical" href="https://bloxharvest.shop/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="favicon.ico">
+
+    <!-- Open Graph (Discord, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="bloxharvest">
+    <meta property="og:title" content="bloxharvest | Grow A Garden 2 Marketplace">
+    <meta property="og:description" content="Fast, secure marketplace for Grow A Garden 2 seeds, pets, and utilities. Instant delivery, safe checkout, and 24/7 support.">
+    <meta property="og:url" content="https://bloxharvest.shop/">
+    <meta property="og:image" content="https://bloxharvest.shop/logo.PNG">
+    <meta property="og:image:alt" content="bloxharvest logo">
+    <meta name="theme-color" content="#e2222c">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="bloxharvest | Grow A Garden 2 Marketplace">
+    <meta name="twitter:description" content="Fast, secure marketplace for Grow A Garden 2 seeds, pets, and utilities. Instant delivery, safe checkout, and 24/7 support.">
+    <meta name="twitter:image" content="https://bloxharvest.shop/logo.PNG">
+
     <!-- Custom Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -392,6 +421,40 @@
             width: 100%;
         }
 
+        .ad-fallback {
+            display: none;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: var(--font-brand);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            border: 1.5px dashed var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card-hover);
+        }
+
+        .ad-horizontal-wrap .ad-fallback {
+            padding: 1.75rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .ad-vertical-sidebar .ad-slot-box {
+            flex: 1 1 0;
+            display: flex;
+        }
+
+        .ad-vertical-sidebar .ad-slot-box .ad-fallback {
+            flex: 1;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.8rem;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
         /* Vertical skyscraper sidebars, sit in the margins beside main content */
         .ad-vertical-sidebar {
             position: absolute;
@@ -410,6 +473,10 @@
         .ad-vertical-sidebar ins.adsbygoogle {
             width: 160px;
             flex: 1 1 0;
+        }
+
+        .ad-vertical-sidebar .ad-slot-box ins.adsbygoogle {
+            flex: 1;
         }
 
         /* Only show the skyscraper sidebars when there's genuinely room for them
@@ -1257,16 +1324,16 @@
 
     <!-- Vertical Skyscraper Ads (left/right, 4 stacked, wide screens only) -->
     <div class="ad-vertical-sidebar left" id="adSidebarLeft">
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
     </div>
     <div class="ad-vertical-sidebar right" id="adSidebarRight">
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
+        <div class="ad-slot-box"><ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins><div class="ad-fallback">Ads Failed To Load</div></div>
     </div>
 
     <main>
@@ -1296,6 +1363,7 @@
         <!-- Horizontal Ad: between items sold and FAQ -->
         <div class="ad-horizontal-wrap" id="adTallyFaq">
             <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="3725908383" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <div class="ad-fallback">Ads Failed To Load</div>
         </div>
 
         <!-- FAQ Section with SVG Icons -->
@@ -1406,6 +1474,7 @@
         <!-- Horizontal Ad: below FAQ -->
         <div class="ad-horizontal-wrap" id="adBelowFaq">
             <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="3725908383" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <div class="ad-fallback">Ads Failed To Load</div>
         </div>
     </main>
 
@@ -1918,6 +1987,7 @@
             return `
                 <div class="ad-horizontal-wrap between-category-ad">
                     <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${currentHorizontalSlot()}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <div class="ad-fallback">Ads Failed To Load</div>
                 </div>
             `;
         }
@@ -1932,9 +2002,44 @@
                     }
                     try {
                         (window.adsbygoogle = window.adsbygoogle || []).push({});
+                        watchAdFill(ins);
                     } catch (e) { /* AdSense not ready yet */ }
                 }
             });
+        }
+
+        // Watches a single <ins> for AdSense to mark it filled/unfilled, and shows
+        // "Ads Failed To Load" in its place whenever no ad actually comes back.
+        function watchAdFill(ins) {
+            const box = ins.closest('.ad-horizontal-wrap, .ad-slot-box');
+            const fallback = box ? box.querySelector('.ad-fallback') : null;
+            if (!fallback) return;
+
+            const applyStatus = () => {
+                const status = ins.getAttribute('data-ad-status');
+                if (status === 'unfilled') {
+                    ins.style.display = 'none';
+                    fallback.style.display = 'block';
+                } else if (status === 'filled') {
+                    ins.style.display = 'block';
+                    fallback.style.display = 'none';
+                }
+            };
+
+            fallback.style.display = 'none';
+            ins.style.display = 'block';
+
+            const observer = new MutationObserver(applyStatus);
+            observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+            ins._adFillObserver = observer;
+
+            // If AdSense never reports a status (blocked, offline, no fill), treat it as failed
+            setTimeout(() => {
+                if (!ins.getAttribute('data-ad-status')) {
+                    ins.style.display = 'none';
+                    fallback.style.display = 'block';
+                }
+            }, 4000);
         }
 
         // Swap horizontal ads to the mobile slot on small screens, keep vertical/horizontal slots in sync,
@@ -1943,8 +2048,14 @@
             const mobile = isMobileViewport();
 
             document.querySelectorAll('ins.ad-unit').forEach(oldIns => {
+                if (oldIns._adFillObserver) oldIns._adFillObserver.disconnect();
+
                 const isHorizontal = oldIns.classList.contains('ad-horizontal');
                 const slot = isHorizontal ? (mobile ? AD_SLOT_HORIZONTAL_MOBILE : AD_SLOT_HORIZONTAL_DESKTOP) : AD_SLOT_VERTICAL;
+
+                const box = oldIns.closest('.ad-horizontal-wrap, .ad-slot-box');
+                const fallback = box ? box.querySelector('.ad-fallback') : null;
+                if (fallback) fallback.style.display = 'none';
 
                 const newIns = document.createElement('ins');
                 newIns.className = oldIns.className;
@@ -1957,6 +2068,7 @@
                 oldIns.parentNode.replaceChild(newIns, oldIns);
                 try {
                     (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    watchAdFill(newIns);
                 } catch (e) { /* AdSense not ready yet */ }
             });
         }
