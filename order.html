@@ -156,19 +156,23 @@
 
         .ad-horizontal-wrap {
             width: 100%;
+            height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 90px;
             margin: 1.5rem 0;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .ad-horizontal-wrap ins.adsbygoogle { width: 100%; }
+        .ad-horizontal-wrap ins.adsbygoogle { width: 100%; height: 100%; }
 
         .ad-fallback {
             display: none;
             width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: var(--text-muted);
             font-family: var(--font-brand);
@@ -177,7 +181,6 @@
             border: 1.5px dashed var(--border-color);
             border-radius: 10px;
             background: var(--bg-card-alt);
-            padding: 1.75rem 1rem;
             font-size: 0.95rem;
         }
     </style>
@@ -431,7 +434,7 @@
                 const status = ins.getAttribute('data-ad-status');
                 if (status === 'unfilled') {
                     ins.style.display = 'none';
-                    fallback.style.display = 'block';
+                    fallback.style.display = 'flex';
                 } else if (status === 'filled') {
                     ins.style.display = 'block';
                     fallback.style.display = 'none';
@@ -444,7 +447,7 @@
             setTimeout(() => {
                 if (!ins.getAttribute('data-ad-status')) {
                     ins.style.display = 'none';
-                    fallback.style.display = 'block';
+                    fallback.style.display = 'flex';
                 }
             }, 4000);
         }
