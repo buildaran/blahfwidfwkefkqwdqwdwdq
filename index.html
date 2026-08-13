@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5090169855504601" crossorigin="anonymous"></script>
     <style>
         /* Custom GrowingGarden Font Definition */
         @font-face {
@@ -373,6 +375,51 @@
             display: flex;
             flex-direction: column;
             gap: 2.5rem;
+        }
+
+        /* ===== Ad Units ===== */
+        .ad-horizontal-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90px;
+            margin: 2.5rem 0;
+            overflow: hidden;
+        }
+
+        .ad-horizontal-wrap ins.adsbygoogle {
+            width: 100%;
+        }
+
+        /* Vertical skyscraper sidebars, sit in the margins beside main content */
+        .ad-vertical-sidebar {
+            position: absolute;
+            top: 0;
+            width: 160px;
+            display: none; /* JS enables on wide-enough viewports */
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            z-index: 2;
+        }
+
+        .ad-vertical-sidebar.left { left: 12px; }
+        .ad-vertical-sidebar.right { right: 12px; }
+
+        .ad-vertical-sidebar ins.adsbygoogle {
+            width: 160px;
+            flex: 1 1 0;
+        }
+
+        /* Only show the skyscraper sidebars when there's genuinely room for them
+           beside the 1100px-wide main column, and never on small/mobile screens */
+        @media (min-width: 1500px) {
+            .ad-vertical-sidebar { display: flex; }
+        }
+
+        @media (max-width: 768px) {
+            .ad-vertical-sidebar { display: none !important; }
         }
 
         .category-row-header {
@@ -1208,6 +1255,20 @@
         </div>
     </header>
 
+    <!-- Vertical Skyscraper Ads (left/right, 4 stacked, wide screens only) -->
+    <div class="ad-vertical-sidebar left" id="adSidebarLeft">
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+    <div class="ad-vertical-sidebar right" id="adSidebarRight">
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <ins class="adsbygoogle ad-unit ad-vertical" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="1106700087" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
     <main>
         <!-- Category Rows -->
         <div class="category-rows" id="categoryRows"></div>
@@ -1230,6 +1291,11 @@
         <!-- Plain Sales Tally -->
         <div class="plain-tally-container">
             <div class="plain-tally-text"><span id="salesTally">0</span> Total Items Sold</div>
+        </div>
+
+        <!-- Horizontal Ad: between items sold and FAQ -->
+        <div class="ad-horizontal-wrap" id="adTallyFaq">
+            <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="3725908383" data-ad-format="auto" data-full-width-responsive="true"></ins>
         </div>
 
         <!-- FAQ Section with SVG Icons -->
@@ -1335,6 +1401,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Horizontal Ad: below FAQ -->
+        <div class="ad-horizontal-wrap" id="adBelowFaq">
+            <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="3725908383" data-ad-format="auto" data-full-width-responsive="true"></ins>
         </div>
     </main>
 
@@ -1549,7 +1620,7 @@
             ];
 
             let anyVisible = false;
-            const sectionsHtml = orderedCategories.map(cat => {
+            const sections = orderedCategories.map(cat => {
                 const itemsInCat = allItems.filter(item =>
                     item.category === cat && item.name.toLowerCase().includes(searchVal)
                 );
@@ -1588,7 +1659,7 @@
                         <div class="category-row-grid">${cardsHtml}</div>
                     </div>
                 `;
-            }).join('');
+            }).filter(html => html !== '');
 
             if (!anyVisible) {
                 container.style.display = 'none';
@@ -1598,9 +1669,11 @@
 
             container.style.display = 'flex';
             emptyContainer.style.display = 'none';
-            container.innerHTML = sectionsHtml;
+            container.innerHTML = sections.join(horizontalAdUnitHTML());
 
             lucide.createIcons();
+            loadNewAds();
+            positionVerticalAds();
         }
 
         function addToCart(itemId) {
@@ -1825,6 +1898,98 @@
             }
         }
 
+        // ===== Ad Management =====
+        const AD_CLIENT = 'ca-pub-5090169855504601';
+        const AD_SLOT_HORIZONTAL_DESKTOP = '3725908383';
+        const AD_SLOT_HORIZONTAL_MOBILE = '2412826718';
+        const AD_SLOT_VERTICAL = '1106700087';
+        const MOBILE_BREAKPOINT = 768;
+
+        function isMobileViewport() {
+            return window.innerWidth <= MOBILE_BREAKPOINT;
+        }
+
+        function currentHorizontalSlot() {
+            return isMobileViewport() ? AD_SLOT_HORIZONTAL_MOBILE : AD_SLOT_HORIZONTAL_DESKTOP;
+        }
+
+        // Markup for a horizontal ad unit inserted between category rows
+        function horizontalAdUnitHTML() {
+            return `
+                <div class="ad-horizontal-wrap between-category-ad">
+                    <ins class="adsbygoogle ad-unit ad-horizontal" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${currentHorizontalSlot()}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                </div>
+            `;
+        }
+
+        // Push AdSense requests for any ad unit not yet filled
+        function loadNewAds() {
+            const mobile = isMobileViewport();
+            document.querySelectorAll('ins.ad-unit').forEach(ins => {
+                if (!ins.getAttribute('data-ad-status') && !ins.hasAttribute('data-adsbygoogle-status')) {
+                    if (ins.classList.contains('ad-horizontal')) {
+                        ins.setAttribute('data-ad-slot', mobile ? AD_SLOT_HORIZONTAL_MOBILE : AD_SLOT_HORIZONTAL_DESKTOP);
+                    }
+                    try {
+                        (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch (e) { /* AdSense not ready yet */ }
+                }
+            });
+        }
+
+        // Swap horizontal ads to the mobile slot on small screens, keep vertical/horizontal slots in sync,
+        // and force a fresh ad request on every unit (AdSense won't refill an already-filled <ins> in place).
+        function refreshAllAds() {
+            const mobile = isMobileViewport();
+
+            document.querySelectorAll('ins.ad-unit').forEach(oldIns => {
+                const isHorizontal = oldIns.classList.contains('ad-horizontal');
+                const slot = isHorizontal ? (mobile ? AD_SLOT_HORIZONTAL_MOBILE : AD_SLOT_HORIZONTAL_DESKTOP) : AD_SLOT_VERTICAL;
+
+                const newIns = document.createElement('ins');
+                newIns.className = oldIns.className;
+                newIns.style.display = 'block';
+                newIns.setAttribute('data-ad-client', AD_CLIENT);
+                newIns.setAttribute('data-ad-slot', slot);
+                newIns.setAttribute('data-ad-format', 'auto');
+                newIns.setAttribute('data-full-width-responsive', 'true');
+
+                oldIns.parentNode.replaceChild(newIns, oldIns);
+                try {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                } catch (e) { /* AdSense not ready yet */ }
+            });
+        }
+
+        // Stretch the two skyscraper sidebars from the top of the listings down to the FAQ section
+        function positionVerticalAds() {
+            const left = document.getElementById('adSidebarLeft');
+            const right = document.getElementById('adSidebarRight');
+            const top = document.getElementById('categoryRows');
+            const faq = document.querySelector('.faq-section');
+            if (!left || !right || !top || !faq) return;
+
+            const topOffset = top.getBoundingClientRect().top + window.scrollY;
+            const faqOffset = faq.getBoundingClientRect().top + window.scrollY;
+            const height = Math.max(faqOffset - topOffset, 400);
+
+            [left, right].forEach(sidebar => {
+                sidebar.style.top = `${topOffset}px`;
+                sidebar.style.height = `${height}px`;
+            });
+        }
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                positionVerticalAds();
+            }, 200);
+        });
+
+        // Refresh every ad unit on the page every 15 seconds
+        setInterval(refreshAllAds, 15000);
+
         function toggleFaq(button) { button.parentElement.classList.toggle('open'); }
         function toggleGameModal(open) { document.getElementById('gameModal').classList.toggle('open', open); }
         function toggleCart(open) { document.getElementById('cartOverlay').classList.toggle('open', open); }
@@ -1840,6 +2005,8 @@
         window.onload = function() {
             lucide.createIcons();
             fetchInitialData();
+            loadNewAds();
+            positionVerticalAds();
         };
     </script>
 </body>
