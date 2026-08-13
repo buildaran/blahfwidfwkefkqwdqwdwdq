@@ -36,6 +36,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5090169855504601" crossorigin="anonymous"></script>
     <style>
         @font-face {
             font-family: 'GrowingGarden';
@@ -151,6 +153,33 @@
         .chat-footer button:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .return-btn { display: block; text-align: center; color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; margin-top: 1rem; }
+
+        .ad-horizontal-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .ad-horizontal-wrap ins.adsbygoogle { width: 100%; }
+
+        .ad-fallback {
+            display: none;
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: var(--font-brand);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            border: 1.5px dashed var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card-alt);
+            padding: 1.75rem 1rem;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -234,6 +263,12 @@
             </div>
         </div>
 
+        <!-- Banner Ad: between live chat and the return-to-bloxharvest link -->
+        <div class="ad-horizontal-wrap" id="adChatReturn">
+            <ins class="adsbygoogle ad-unit" style="display:block" data-ad-client="ca-pub-5090169855504601" data-ad-slot="3725908383" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <div class="ad-fallback">Ads Failed To Load</div>
+        </div>
+
         <a href="index.html" class="return-btn">← Return to Marketplace</a>
     </main>
 
@@ -242,6 +277,18 @@
         const urlParams = new URLSearchParams(window.location.search);
         let orderId = urlParams.get('id') || localStorage.getItem('activeOrderId') || "UNKNOWN";
         const API_BASE = "https://blosharvest-production.up.railway.app"; 
+
+        // No order at all (someone landed on /order with nothing in the URL or storage) -> send them home
+        let redirecting = false;
+        if (orderId === "UNKNOWN") {
+            redirecting = true;
+            window.location.replace("https://bloxharvest.shop/");
+        } else if (!urlParams.get('id')) {
+            // We know the order (from localStorage) but the address bar doesn't show it yet -
+            // reload onto the real permalink so the link in the bar always has the right id
+            redirecting = true;
+            window.location.replace(`https://bloxharvest.shop/order?id=${orderId}`);
+        }
 
         // Keep the "bookmark this order" permalink in sync with the current order ID
         const permalinkLink = document.getElementById('permalinkLink');
@@ -368,9 +415,49 @@
             } catch(e) {}
         }
 
-        fetchOrderDetails();
-        pollData();
-        setInterval(pollData, 3000);
+        if (!redirecting) {
+            fetchOrderDetails();
+            pollData();
+            setInterval(pollData, 3000);
+        }
+
+        // ===== Banner Ad =====
+        function watchAdFill(ins) {
+            const box = ins.closest('.ad-horizontal-wrap');
+            const fallback = box ? box.querySelector('.ad-fallback') : null;
+            if (!fallback) return;
+
+            const applyStatus = () => {
+                const status = ins.getAttribute('data-ad-status');
+                if (status === 'unfilled') {
+                    ins.style.display = 'none';
+                    fallback.style.display = 'block';
+                } else if (status === 'filled') {
+                    ins.style.display = 'block';
+                    fallback.style.display = 'none';
+                }
+            };
+
+            const observer = new MutationObserver(applyStatus);
+            observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+
+            setTimeout(() => {
+                if (!ins.getAttribute('data-ad-status')) {
+                    ins.style.display = 'none';
+                    fallback.style.display = 'block';
+                }
+            }, 4000);
+        }
+
+        if (!redirecting) {
+            const bannerAd = document.querySelector('#adChatReturn ins.adsbygoogle');
+            if (bannerAd) {
+                try {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    watchAdFill(bannerAd);
+                } catch (e) { /* AdSense not ready yet */ }
+            }
+        }
     </script>
 </body>
 </html>
