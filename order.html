@@ -4,6 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Order Receipt | bloxharvest</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Track your bloxharvest order status, payment, and delivery for Grow A Garden 2 items.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://bloxharvest.shop/order">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="favicon.ico">
+
+    <!-- Open Graph (Discord, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="bloxharvest">
+    <meta property="og:title" content="Order Receipt | bloxharvest">
+    <meta property="og:description" content="Track your bloxharvest order status, payment, and delivery for Grow A Garden 2 items.">
+    <meta property="og:url" content="https://bloxharvest.shop/order">
+    <meta property="og:image" content="https://bloxharvest.shop/logo.PNG">
+    <meta property="og:image:alt" content="bloxharvest logo">
+    <meta name="theme-color" content="#e2222c">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Order Receipt | bloxharvest">
+    <meta name="twitter:description" content="Track your bloxharvest order status, payment, and delivery for Grow A Garden 2 items.">
+    <meta name="twitter:image" content="https://bloxharvest.shop/logo.PNG">
+
     <!-- Custom Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,6 +93,34 @@
         main { flex: 1; width: 100%; max-width: 600px; padding: 2rem 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; z-index: 1; }
 
         .receipt-card { background: var(--bg-card); border: 1px solid var(--border-color); border-top: 4px solid var(--accent-red); border-radius: 3px 10px 3px 10px; padding: 2rem 1.5rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); }
+
+        .permalink-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .permalink-bar span.label {
+            color: var(--text-muted);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .permalink-link {
+            color: var(--accent-red);
+            font-weight: 700;
+            text-decoration: none;
+            font-family: var(--font-mono, monospace);
+            overflow-wrap: anywhere;
+        }
+
+        .permalink-link:hover { text-decoration: underline; }
         .status-header { text-align: center; margin-bottom: 2rem; }
         .status-icon { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; }
         .status-icon.pending { background: rgba(245, 158, 11, 0.12); color: #f59e0b; box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.06); }
@@ -119,6 +174,11 @@
     </header>
 
     <main>
+        <div class="permalink-bar" id="permalinkBar">
+            <span class="label">Bookmark this order:</span>
+            <a href="https://bloxharvest.shop/order" id="permalinkLink" class="permalink-link">bloxharvest.shop/order</a>
+        </div>
+
         <div class="receipt-card">
             <div class="status-header">
                 <div class="status-icon pending" id="statusIcon"><i data-lucide="clock" style="width: 28px; height: 28px;"></i></div>
@@ -182,6 +242,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         let orderId = urlParams.get('id') || localStorage.getItem('activeOrderId') || "UNKNOWN";
         const API_BASE = "https://blosharvest-production.up.railway.app"; 
+
+        // Keep the "bookmark this order" permalink in sync with the current order ID
+        const permalinkLink = document.getElementById('permalinkLink');
+        if (permalinkLink) {
+            if (orderId !== "UNKNOWN") {
+                const permalinkUrl = `https://bloxharvest.shop/order?id=${orderId}`;
+                permalinkLink.href = permalinkUrl;
+                permalinkLink.textContent = permalinkUrl.replace('https://', '');
+            } else {
+                permalinkLink.href = 'https://bloxharvest.shop/order';
+                permalinkLink.textContent = 'bloxharvest.shop/order';
+            }
+        }
 
         async function fetchOrderDetails() {
             const bigIcon = document.getElementById('statusIcon');
