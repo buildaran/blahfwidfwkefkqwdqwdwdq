@@ -67,53 +67,36 @@
         .btn-success { background: #10b981; }
         .btn-secondary { background: var(--border-color); color: var(--text-main); }
 
-        /* --- Upgraded Login Screen UI --- */
-        #loginScreen { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; padding: 1.25rem; }
-        .login-box { 
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            padding: 3.5rem 2.5rem; border-radius: 20px; text-align: center; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.5) inset; 
-            border: 1px solid var(--border-color); width: 100%; max-width: 420px; 
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .login-icon-wrapper {
-            width: 64px; height: 64px; border-radius: 16px; background: rgba(226, 34, 44, 0.1);
-            display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;
-            color: var(--accent-red); box-shadow: 0 4px 12px rgba(226, 34, 44, 0.15);
-        }
-        .login-box h2 {
-            font-family: var(--font-brand); color: var(--text-main); font-size: 2.2rem; 
-            margin: 0 0 0.5rem 0; letter-spacing: -0.02em;
-        }
-        .login-box p {
-            color: var(--text-muted); font-size: 0.95rem; margin: 0 0 2rem 0; line-height: 1.5;
-        }
-        .input-group { width: 100%; position: relative; margin-bottom: 1.5rem; }
-        .input-group i {
-            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); width: 18px; height: 18px; transition: color 0.3s;
-        }
-        input.auth-input { 
-            width: 100%; padding: 1rem 1rem 1rem 2.8rem; border-radius: 12px; 
-            border: 2px solid var(--border-color); font-size: 1rem; outline: none; 
-            background: rgba(255,255,255,0.9); transition: all 0.3s ease; box-sizing: border-box;
-            font-weight: 600; font-family: var(--font-body);
-        }
-        input.auth-input:focus { 
-            border-color: var(--accent-red); background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(226, 34, 44, 0.1);
-        }
-        input.auth-input:focus + i { color: var(--accent-red); }
-        .login-btn {
-            width: 100%; padding: 1.1rem; font-size: 1.05rem; border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent-red) 0%, #c81b24 100%);
-            text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.3s ease;
-        }
-        .login-btn:hover {
-            box-shadow: 0 8px 20px rgba(226, 34, 44, 0.3); transform: translateY(-2px);
+        /* --- Mobile responsiveness --- */
+        @media (max-width: 768px) {
+            header { padding: 0.75rem 1rem; flex-wrap: nowrap; gap: 0.5rem; }
+            .brand-text { font-size: 1.4rem; }
+            .brand img { height: 28px !important; }
+            .header-controls button { padding: 0.5rem 0.85rem; font-size: 0.8rem; }
+
+            .container { padding: 1rem 0.75rem; }
+            .panel { padding: 1rem; margin-bottom: 1.25rem; border-radius: 8px; }
+            .panel h2 { font-size: 1.2rem; gap: 0.4rem; }
+
+            .grid { gap: 1rem; margin-top: 1.25rem; }
+
+            th, td { padding: 0.65rem 0.5rem; font-size: 0.8rem; }
+            th { font-size: 0.68rem; }
+
+            td div[style*="display: flex"] { flex-wrap: wrap; }
+            button { font-size: 0.8rem; padding: 0.55rem 0.9rem; }
+
+            .chat-box { height: 200px; }
+            .chat-controls input { padding: 0.7rem; }
+
+            h1[id="totalSales"], h1[id="totalOrders"] { font-size: 2.6rem !important; }
         }
 
-        #dashboard { display: none; }
+        @media (max-width: 420px) {
+            .brand-text { font-size: 1.15rem; }
+            .price-input { width: 64px; }
+        }
+
         .grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
         @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
         canvas { background: transparent; border-radius: 8px; margin-top: 1rem; width: 100%; }
@@ -139,128 +122,158 @@
 </head>
 <body>
 
-    <div id="loginScreen">
-        <div class="login-box">
-            <div class="login-icon-wrapper">
-                <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
-            </div>
-            <h2>Admin Portal</h2>
-            <p>Enter the master password to access your bloxharvest dashboard and manage orders.</p>
-            
-            <div class="input-group">
-                <input type="password" id="passInput" class="auth-input" placeholder="Master Password" onkeypress="if(event.key === 'Enter') login()">
-                <i data-lucide="lock"></i>
-            </div>
-            
-            <button class="login-btn" onclick="login()">Authenticate</button>
-        </div>
-    </div>
-
-    <div id="dashboard">
-        <header>
-            <a href="#" class="brand">
-                <img src="logo.PNG" alt="logo" style="height: 36px; width: auto; border-radius: 8px;" onerror="this.style.display='none';">
-                <span class="brand-text">bloxharvest admin</span>
-            </a>
-            <div class="header-controls">
-                <button class="btn-secondary" onclick="logout()">Logout</button>
-            </div>
-        </header>
-
-        <div class="container">
-            <div class="grid">
-                <div class="panel">
-                    <h2><i data-lucide="trending-up" style="color: var(--accent-red);"></i> Sales Activity</h2>
-                    <canvas id="salesChart" width="500" height="250"></canvas>
-                </div>
-                
-                <div class="panel" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
-                    <h2><i data-lucide="bar-chart-2" style="color: var(--accent-red);"></i> Overview</h2>
-                    <h1 style="font-size: 3.5rem; color: var(--text-main); margin: 0; font-family: var(--font-brand);" id="totalSales">0</h1>
-                    <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Total Items Sold</p>
-                    <h1 style="font-size: 3.5rem; color: #10b981; margin: 1.5rem 0 0 0; font-family: var(--font-brand);" id="totalOrders">0</h1>
-                    <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Active Orders</p>
-                </div>
-
-                <div class="panel">
-                    <h2><i data-lucide="message-square" style="color: var(--accent-red);"></i> Live Support Hub</h2>
-                    <div class="chat-list" id="chatList"></div>
-                    <div id="activeChatArea" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <div style="font-size: 0.85rem; font-weight: 600;">Ticket: <strong id="activeChatId"></strong></div>
-                            <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; color: #ef4444; border-color: #ef4444;" onclick="closeTicket()">
-                                Close Ticket
-                            </button>
-                        </div>
-                        <div class="chat-box" id="adminChatBox"></div>
-                        <div class="chat-controls">
-                            <input type="text" id="adminChatInput" placeholder="Type response..." onkeypress="if(event.key === 'Enter') sendAdminMsg()">
-                            <button id="adminChatBtn" onclick="sendAdminMsg()"><i data-lucide="send" style="width: 16px; height: 16px;"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel" style="margin-top: 2rem;">
-                <h2><i data-lucide="shopping-bag" style="color: var(--accent-red);"></i> Recent Orders</h2>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Roblox User</th>
-                                <th>Status</th>
-                                <th>Time Elapsed</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ordersBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="panel" style="margin-top: 2rem;">
-                <h2><i data-lucide="package" style="color: var(--accent-red);"></i> Inventory Editor</h2>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th width="60">Icon</th>
-                                <th>Item Name</th>
-                                <th>Price ($)</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div id="appRoot" style="min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; z-index:1;">
+        <p style="color: var(--text-muted); font-family: var(--font-body); font-weight:600;">Checking access…</p>
     </div>
 
     <script>
-        lucide.createIcons();
         const API_BASE = "https://blosharvest-production.up.railway.app"; 
         let token = localStorage.getItem('adminToken');
         let currentActiveChat = null;
         let globalChatsData = {};
         let globalOrdersData = [];
 
-        if (token) showDashboard();
+        const DASHBOARD_HTML = `
+            <header>
+                <a href="#" class="brand">
+                    <img src="logo.PNG" alt="logo" style="height: 36px; width: auto; border-radius: 8px;" onerror="this.style.display='none';">
+                    <span class="brand-text">bloxharvest admin</span>
+                </a>
+                <div class="header-controls">
+                    <button class="btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </header>
 
-        async function login() {
-            const pass = document.getElementById('passInput').value;
-            const res = await fetch(`${API_BASE}/api/admin/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({password: pass}) });
-            const data = await res.json();
-            if (data.success) { token = data.token; localStorage.setItem('adminToken', token); showDashboard(); } 
-            else alert('Incorrect Password');
+            <div class="container">
+                <div class="grid">
+                    <div class="panel">
+                        <h2><i data-lucide="trending-up" style="color: var(--accent-red);"></i> Sales Activity</h2>
+                        <canvas id="salesChart" width="500" height="250"></canvas>
+                    </div>
+
+                    <div class="panel" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                        <h2><i data-lucide="bar-chart-2" style="color: var(--accent-red);"></i> Overview</h2>
+                        <h1 style="font-size: 3.5rem; color: var(--text-main); margin: 0; font-family: var(--font-brand);" id="totalSales">0</h1>
+                        <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Total Items Sold</p>
+                        <h1 style="font-size: 3.5rem; color: #10b981; margin: 1.5rem 0 0 0; font-family: var(--font-brand);" id="totalOrders">0</h1>
+                        <p style="margin-top:0; color: var(--text-muted); font-weight: 600;">Active Orders</p>
+                    </div>
+
+                    <div class="panel">
+                        <h2><i data-lucide="message-square" style="color: var(--accent-red);"></i> Live Support Hub</h2>
+                        <div class="chat-list" id="chatList"></div>
+                        <div id="activeChatArea" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <div style="font-size: 0.85rem; font-weight: 600;">Ticket: <strong id="activeChatId"></strong></div>
+                                <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; color: #ef4444; border-color: #ef4444;" onclick="closeTicket()">
+                                    Close Ticket
+                                </button>
+                            </div>
+                            <div class="chat-box" id="adminChatBox"></div>
+                            <div class="chat-controls">
+                                <input type="text" id="adminChatInput" placeholder="Type response..." onkeypress="if(event.key === 'Enter') sendAdminMsg()">
+                                <button id="adminChatBtn" onclick="sendAdminMsg()"><i data-lucide="send" style="width: 16px; height: 16px;"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 2rem;">
+                    <h2><i data-lucide="shopping-bag" style="color: var(--accent-red);"></i> Recent Orders</h2>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Roblox User</th>
+                                    <th>Status</th>
+                                    <th>Time Elapsed</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 2rem;">
+                    <h2><i data-lucide="package" style="color: var(--accent-red);"></i> Inventory Editor</h2>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th width="60">Icon</th>
+                                    <th>Item Name</th>
+                                    <th>Price ($)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        boot();
+
+        async function boot() {
+            if (token) {
+                const valid = await verifyToken();
+                if (valid) { renderDashboard(); return; }
+                localStorage.removeItem('adminToken');
+                token = null;
+            }
+            const root = document.getElementById('appRoot');
+            if (root) root.innerHTML = '';
+            promptLogin();
+        }
+
+        async function verifyToken() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/dashboard`, { headers: { 'Authorization': `Bearer ${token}` } });
+                return res.ok;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function promptLogin() {
+            const pass = window.prompt('Enter the bloxharvest admin password:');
+
+            // Cancelled the popup - nothing to see here, send them away
+            if (pass === null) {
+                window.location.href = 'https://bloxharvest.shop/';
+                return;
+            }
+            if (!pass.trim()) {
+                return promptLogin();
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pass }) });
+                const data = await res.json();
+                if (data.success) {
+                    token = data.token;
+                    localStorage.setItem('adminToken', token);
+                    renderDashboard();
+                } else {
+                    alert('Incorrect password.');
+                    promptLogin();
+                }
+            } catch (e) {
+                alert('Could not reach the server. Please try again.');
+                promptLogin();
+            }
         }
 
         function logout() { localStorage.removeItem('adminToken'); window.location.reload(); }
 
-        async function showDashboard() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
+        async function renderDashboard() {
+            const root = document.getElementById('appRoot');
+            root.removeAttribute('style');
+            root.innerHTML = DASHBOARD_HTML;
+            lucide.createIcons();
             await loadData();
             setInterval(loadData, 5000);
         }
